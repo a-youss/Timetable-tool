@@ -17,9 +17,14 @@
   },
   "homepage": "https://github.com/a-youss/ece9065-ayouss-project#readme",
   "dependencies": {
+    "bcrypt": "^5.0.0",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
+    "crypto": "^1.0.1",
     "express": "^4.17.1",
+    "express-sanitizer": "^1.0.5",
+    "fs": "0.0.1-security",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.7",
     "passport": "^0.4.1"
   }
