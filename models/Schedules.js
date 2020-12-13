@@ -14,6 +14,9 @@ var ScheduleSchema = new mongoose.Schema({
     },
     access:{
         type: String
+    },
+    lastmodified:{
+        type: Date
     }
 
 });

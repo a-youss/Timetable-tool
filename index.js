@@ -31,7 +31,7 @@ var db = mongoose.connect('mongodb+srv://db_user:Secretpassw0rd@cluster0.63jsz.m
 
 mongoose.Promise = global.Promise;
 
-
+app.use(expressSanitizer());
 app.use(bodyParser.json());
 app.use(cors());
 app.use('/admin', restricted);
@@ -45,6 +45,38 @@ app.use(function(req, res) {
       "Access-Control-Allow-Headers",
       "Authorization, Origin, Content-Type, Accept"
     );
+});
+
+open.get('/Search/:subject/:course', (req,res) => {
+    let subjects = [];
+    let result = [];
+    let i = 0;
+    let subject = req.sanitize(req.params.subject);
+    let course = req.sanitize(req.params.course);
+
+    timetableData.forEach(e => {
+    if(e.subject==subject){
+        subjects[i] = e;
+        i++;
+    }});
+    if(subjects.length<1){
+        return res.status(404).send({"message":'Subject not found'});
+    }
+    if(course == "NA"){
+        result=subjects;
+    }else{
+        i=0;
+        subjects.forEach(e => {
+            if(e.catalog_nbr.includes(course.toUpperCase())){
+                result[i] = e;
+                i++;
+            }
+        });
+    }
+    if(result.length<1){
+        return res.status(404).send({"message":"No matches were found"});
+    }
+    return res.send(result)
 });
 
 open.put('/register', (req,res)=>{
@@ -116,6 +148,11 @@ open.post('/login', (req,res)=>{
                     return res.status(401).send({
                         accessToken: null,
                         msg: "Invalid Password!"
+                    });
+                }else if(user.deactivated){
+                    return res.status(401).send({
+                        accessToken: null,
+                        msg: "User deactivated, Contact admin@uwo.ca"
                     });
                 }else{
                     var token = jwt.sign({ email: user.email }, JWT_SECRET);

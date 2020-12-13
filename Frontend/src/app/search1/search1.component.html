@@ -1,0 +1,57 @@
+<h3>Search</h3>
+<br>
+<form id="search">
+    <label>Subject: </label>
+    <input type="text" #searchSubject>&nbsp;
+    <label>Course Code: </label>
+    <input type="text" #courseCode>&nbsp;
+    <input type="submit" value="Search" (click)="viewTimetable(searchSubject.value, courseCode.value)">
+</form>
+<br>
+<div *ngIf="subjects" class="result" id="searchResults">
+    <div *ngFor="let s of subjects">
+        <span>
+            <h3>{{s.subject}} {{s.catalog_nbr}} - {{s.className}}</h3>
+            <table>
+                <tr>
+                    <th>Section</th>
+                    <th>Component</th>
+                    <th>Class Nbr</th>
+                    <th>Days</th>
+                    <th>Start Time</th>
+                    <th>End Time</th>
+                    <th>Status</th>
+                </tr>
+                <ng-container *ngFor="let c of s.course_info" >
+                    <tr>
+                        <td>{{c.class_section}}</td>
+                        <td>{{c.ssr_component}}</td>
+                        <td>{{c.class_nbr}}</td>
+                        <td>
+                            <ng-container *ngFor="let day of c.days">{{day}}</ng-container>
+                        </td>
+                        <td>{{c.start_time}}</td>
+                        <td>{{c.end_time}}</td>
+                        <td>{{c.enrl_stat}}</td>
+                    </tr>
+                </ng-container>
+            </table>
+            <details>
+                <summary>More Details</summary>
+                <h4>Instructors</h4>
+                <p>{{s.course_info[0].instructors}}</p>
+                <h4>Facility</h4>
+                <p>{{s.course_info[0].facility_ID}}</p>
+                <h4>Campus</h4>
+                <p>{{s.course_info[0].campus}}</p>
+                <h4>Restrictions</h4>
+                <p>{{s.course_info[0].descr}}</p>
+                <p>{{s.course_info[0].descrlong}}</p>
+                <h4>Description</h4>
+                <p>{{s.catalog_description}}</p>
+                <h4>Reviews</h4>
+            </details>
+        </span>
+    </div>
+</div>
+<p *ngIf="errorMsg" id="SearchErr" class="error">{{errorMsg}}</p>

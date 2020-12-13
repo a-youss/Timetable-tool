@@ -11,7 +11,8 @@ import { RegisComponent } from './regis/regis.component';
 import { ProfileComponent } from './profile/profile.component';
 import { AdminComponent } from './admin/admin.component';
 import { UserComponent } from './user/user.component';
-import { AuthService } from './services/auth.service'
+import { AuthService } from './services/auth.service';
+import { Search1Component } from './search1/search1.component'
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { AuthService } from './services/auth.service'
     RegisComponent,
     ProfileComponent,
     AdminComponent,
-    UserComponent
+    UserComponent,
+    Search1Component
   ],
   imports: [
     BrowserModule,

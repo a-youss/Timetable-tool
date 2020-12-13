@@ -15,15 +15,25 @@ export class RegisComponent implements OnInit {
   ngOnInit(): void {
   }
   register(name: string, email: string, password: string, passwordConf: string){
-    this.authService.register(name, email, password, passwordConf).subscribe(
-      data => {
-        this.regSuccessful= true;
-        console.log(data);
-      },
-      err => {
-        this.errorMsg = err.error.msg;
-        console.log(err.error.msg)
+    var pattern1 = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
+    if(!email){
+      this.errorMsg = 'Please enter an e-mail';
+    }else if(!password){
+      this.errorMsg = 'Please enter a password';
+    }else{
+      if(pattern1.test(email)){
+        this.authService.register(name, email, password, passwordConf).subscribe(
+          data => {
+            this.regSuccessful= true;
+            console.log(data);
+          },err => {
+            this.errorMsg = err.error.msg;
+            console.log(err.error.msg)
+          }
+        );
+      }else{
+        this.errorMsg = 'Please enter a valid email';
       }
-    );
+    }
   }
 }
