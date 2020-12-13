@@ -13,6 +13,7 @@ export class UserComponent implements OnInit {
   addErrorMsg =''
   schedulesMsg='';
   schErrorMsg='';
+  revErrorMsg='';
   pairs: any;
   currentUser:any;
   schedules: any;
@@ -121,7 +122,27 @@ export class UserComponent implements OnInit {
           });
         });
       });
-      console.log(this.scheduleTimetable)
+    }
+  }
+
+  postReview(subject: string, course: string, review: string){
+    subject=subject.trim()
+    course=course.trim()
+    review=review.trim()
+    var pattern1 = /^[A-Z]{2,8}$/;
+    var pattern2 =/^\d{4}[A-Z]{0,1}$/;
+    var pattern3 = /^.{3,150}$/u;
+    if(pattern1.test(subject)&&pattern2.test(course)&&pattern3.test(review)){
+      this.timetableService.addReview(subject,course,review, this.currentUser.name)
+      .subscribe((res)=>{
+        if(res.msg){
+          console.log(res)
+        }
+      },(error: ErrorEvent) => {
+        this.revErrorMsg =error.error.msg;
+      });
+    }else{
+      this.revErrorMsg = 'Subject must contain 2 to 8 letters (All uppercase), Course Code must be empty or contain 4 numbers followed by an optional capital letter, and the review must be between 3 and 150 characters';
     }
   }
 }

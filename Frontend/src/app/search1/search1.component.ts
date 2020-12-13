@@ -15,6 +15,7 @@ export class Search1Component implements OnInit {
   viewTimetable(subject: string, course: string): void {
     subject = subject.trim();
     course = course.trim();
+    this.errorMsg ='';
     var i=0;
     var pattern1 = /^[A-Z]{2,8}$/;
     var pattern2 =/^\d{4}[A-Z]{0,1}$/
@@ -25,7 +26,7 @@ export class Search1Component implements OnInit {
       this.timetableService.getTimetable(subject,course)
       .subscribe((data)=>{
         this.subjects = data;
-        i++;
+        console.log(data)
       },
       (error: ErrorEvent)=>{
         this.errorMsg = error.error.message;

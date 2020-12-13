@@ -13,6 +13,8 @@ const bcrypt = require('bcrypt');
 const fs = require('fs');
 const User = require('./models/Users');
 const Schedule = require('./models/Schedules');
+const Review = require('./models/Reviews');
+const { time } = require('console');
 
 const subjectData = parseData('Lab5-subject-data.json');
 const timetableData = parseData('Lab3-timetable-data.json');
@@ -138,7 +140,31 @@ secure.post('/Schedule/Delete/:schedule', verifyToken, (req, res)=>{
     res.send('secure')
 })
 secure.post('/Review/add', verifyToken, (req,res)=>{
-    res.send('secure')
+    var reviewer = req.body.reviewer;
+    var review = req.body.review;
+    var subject = req.body.subject;
+    var course = req.body.course;
+
+    flag = contains(timetableData, "subject", "catalog_nbr", subject, course);
+    if(flag){
+        res.status(400).send({msg:'Course does not exist'})
+    }else{
+        const doc = new Review({
+            review:review,
+            reviewer: reviewer,
+            subject: subject,
+            course: course,
+            visibile: true,
+            datePosted: Date.now()
+        })
+        doc.save((err)=>{
+            if(err){
+                return res.status(500).send({ msg: err });
+            }else{
+                return res.send({msg: 'Review successfully posted'});
+            }
+        })
+    }
 })
 restricted.post('/Deactivate',[verifyToken, isAdmin], (req, res)=>{
     res.send({msg:'admin'})
@@ -179,7 +205,7 @@ open.get('/Search/:subject/:course', (req,res) => {
     if(result.length<1){
         return res.status(404).send({"message":"No matches were found"});
     }
-    return res.send(result)
+    res.send(result)
 });
 
 open.get('/Keywords/:course/:class', (req, res)=>{

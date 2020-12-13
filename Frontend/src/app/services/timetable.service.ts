@@ -40,4 +40,13 @@ export class TimetableService {
     }, httpOptions)
   }
 
+  addReview(subject: string, course: string, review: string, reviewer:string): Observable<any>{
+    return this.http.post<any>(BASE_URL+'secure/Review/add',{
+      reviewer,
+      subject,
+      course,
+      review
+    })
+  }
+
 }

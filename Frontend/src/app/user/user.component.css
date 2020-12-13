@@ -40,16 +40,11 @@ li{
 	background-color: rgb(139, 242, 139);
 }
 
-.LAB{
-    background-color: #82b1bf;
-}
-
 .result{
     background-color: #eeeeee;
 }
-
-.TUT{
-    background-color: #a8e46b;
+button{
+    margin: 10px;
 }
 table{
     width: 80%;

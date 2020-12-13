@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 
-var ScheduleSchema = new mongoose.Schema({
+var ReviewSchema = new mongoose.Schema({
     review: {
         type: String,
         required: true
@@ -10,7 +10,7 @@ var ScheduleSchema = new mongoose.Schema({
         required: true
     },
     subject:{
-        type: Array,
+        type: String,
         required: true
     },
     reviewer:{
@@ -20,8 +20,12 @@ var ScheduleSchema = new mongoose.Schema({
     visibile:{
         type: Boolean,
         required: true
+    },
+    datePosted:{
+        type: Date,
+        required: true
     }
 });
 
-  var Schedule = mongoose.model('Schedule', ScheduleSchema);
-  module.exports = Schedule;
+  var Review = mongoose.model('Review', ReviewSchema);
+  module.exports = Review;

@@ -32,7 +32,7 @@
     <ul *ngIf='!schedulesMsg' id="Schedules">
         <li *ngFor="let s of schedules">
             <span>
-                <button (click)="viewScheduleTimetable(s.name)">{{s.name}}</button>
+                <label (click)="viewScheduleTimetable(s.name)">{{s.name}}:</label>
             </span>
         </li>
     </ul>
@@ -74,3 +74,16 @@
     </div>
     <p id="schCorErr" class="error">{{schErrorMsg}}</p>
 </div>
+<br>
+<h3>Add Reviews</h3>
+<form>
+    <label>Subject: </label>
+    <input type="text" #searchSubject>&nbsp;
+    <label>Course Code: </label>
+    <input type="text" #courseCode>&nbsp;
+    <label>Review: </label>
+    <textarea #review></textarea>
+    <br><br>
+    <input type="submit" value="Post Review" (click)="postReview(searchSubject.value, courseCode.value, review.value)">
+</form>
+<p *ngIf='revErrorMsg' class="error">{{revErrorMsg}}</p>
