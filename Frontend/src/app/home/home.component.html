@@ -1,7 +1,11 @@
 <h1>Courses Timetable</h1>
-<a href="/login"><button>Login</button></a>
+<a *ngIf="!isLoggedIn" href="/login"><button>Login</button></a>
+<button *ngIf="isLoggedIn" (click)="logOut()">Logout</button>
 <br>
 <article>Search for the courses available at Western University, and log in to create public and private course lists</article>
 <br>
 <app-search1></app-search1>
+<div *ngIf="isLoggedIn">
+    <app-user></app-user>
+</div>
 <br>

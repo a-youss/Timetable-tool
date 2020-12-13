@@ -5,6 +5,10 @@ var ScheduleSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    ownerName:{
+        type: String,
+        required: true
+    },
     description:{
         type: String
     },
@@ -12,10 +16,10 @@ var ScheduleSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    courses:{
-        type: Array,
-        required: true
-    },
+    courses:[{
+        type: Object,
+        required:true
+    }],
     visibility:{
         type: String,
         required: true

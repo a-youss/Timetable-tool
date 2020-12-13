@@ -8,11 +8,10 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './home/home.component';
 import { LoginComponent } from './login/login.component';
 import { RegisComponent } from './regis/regis.component';
-import { ProfileComponent } from './profile/profile.component';
 import { AdminComponent } from './admin/admin.component';
-import { UserComponent } from './user/user.component';
-import { AuthService } from './services/auth.service';
 import { Search1Component } from './search1/search1.component'
+import { authInterceptorProviders } from './auth.interceptor';
+import { UserComponent } from './user/user.component';
 
 @NgModule({
   declarations: [
@@ -20,10 +19,9 @@ import { Search1Component } from './search1/search1.component'
     HomeComponent,
     LoginComponent,
     RegisComponent,
-    ProfileComponent,
     AdminComponent,
-    UserComponent,
-    Search1Component
+    Search1Component,
+    UserComponent
   ],
   imports: [
     BrowserModule,
@@ -31,7 +29,7 @@ import { Search1Component } from './search1/search1.component'
     FormsModule,
     HttpClientModule
   ],
-  providers: [AuthService],
+  providers: [authInterceptorProviders],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

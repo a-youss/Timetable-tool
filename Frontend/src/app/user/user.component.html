@@ -1,1 +1,27 @@
-<p>user works!</p>
+<h3>Schedules</h3>
+<h4>Create a New Schedule:</h4>
+<form id="createSchedule">
+    <label>Schedule Name </label>
+    <input type="text" #scheduleName>
+    <br><br>
+    <label>Description </label>
+    <input type="text" value="" #description>
+    <br><br>
+    <label>Visibility: </label>
+    <select #visibility>
+        <option value="private">Private</option>
+        <option value="public">Public</option>
+    </select>
+    <br><br>
+    <label>Subject</label>&nbsp;
+    <input type="text" class="addSubject">&nbsp;
+    <label>Course</label>&nbsp;
+    <input type="text" id="addCourse" class="addCourse">&nbsp;
+    <input type="button" id="AddToList" value="+" (click)="addtoList()">
+    <br><br>
+    <input type="submit" value="Create" (click)="createSchedule(scheduleName.value,description.value,visibility.value)">
+</form>
+<p *ngIf='errorMsg' class="error">{{errorMsg}}</p>
+<p *ngIf='addErrorMsg' class="error">{{addErrorMsg}}</p>
+<p *ngIf='successMsg' class="success">{{successMsg}}</p>
+<br>

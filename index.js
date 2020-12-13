@@ -48,62 +48,73 @@ app.use(function(req, res) {
 });
 
 secure.put('/Schedule/Create', verifyToken, (req,res) =>{
-    res.send('secured')
-    // var name = req.sanitize(req.body.scheduleName);
-    // var pairs = req.body.Courses;
-    // var desc = req.body.desc;
-    // var visibility = req.body.visibility;
-    // Schedule.count({owner: req.email}, (err, count)=>{
-    //     if(err){
-    //         res.status(404);
-    //     }else if(count<20){
-    //         Schedule.findOne({name:name}, (err, doc)=>{
-    //             if(err){
-    //                 res.status(404);
-    //             }else if(doc){
-    //                 res.status(400).send({msg: 'Schedule with this name already exists'})
-    //             }else{
-    //                 let flags = [];
-    //                 let invPairs = []; 
-    //                 let j=0;
-    //                 let message ='pairs do not exist';
+    var name = req.sanitize(req.body.name);
+    var desc = req.sanitize(req.body.desc);
+    var pairs = req.body.pairs;
+    console.log(pairs);
+    var ownerName = req.sanitize(req.body.owner);
+    var visibility = req.body.visibility;
+    Schedule.count({owner: req.email}, (err, count)=>{
+        if(err){
+            res.status(404);
+        }else if(count<20){
+            Schedule.findOne({name:name}, (err, doc)=>{
+                if(err){
+                    res.status(404);
+                }else if(doc){
+                    res.status(400).send({msg: 'Schedule with this name already exists'})
+                }else{
+                    let flags = [];
+                    let invPairs = []; 
+                    let j=0;
+                    let message ='pairs do not exist';
+                    i=0;
 
-    //                 pairs.forEach((pair, i)=>{
-    //                     flags[i] = contains(data, "subject", "catalog_nbr", req.sanitize(pair.Subject), req.sanitize(pair.Course));
-    //                     if(!flags[i]){
-    //                         invPairs[j] = {"subject":req.sanitize(pair.Subject), "catalog_nbr":req.sanitize(pair.Course)}
-    //                         j++;
-    //                     }
-    //                 });
-    //                 var count = 0;
-    //                 for(let i in invPairs){
-    //                     count++;
-    //                 }
-    //                 if(count>0){
-    //                     invPairs.forEach(pair=>{
-    //                         message = ' "'+pair.subject + ' ' + pair.catalog_nbr + '" ' + message;
-    //                     });
-    //                     console.log(message)
-    //                     return res.status(400).send({'message':`${message}`})
-    //                 }
-    //                 const schedule = new Schedule({
-    //                     owner:req.email,
-    //                     name: name,
-    //                     courses: pairs,
-    //                     description: desc,
-    //                     visibility: visibility,
-    //                     lastmodified: Date.now()
-    //                 })
-    //             }
-    //         })
-    //     }else{
-    //         res.status(401).send({msg: 'Maximum number of schedules reached'})
-    //     }
-    // });
+                    pairs.forEach((pair,i)=>{
+                        flags[i] = contains(timetableData, "subject", "catalog_nbr", req.sanitize(pair.Subject), req.sanitize(pair.Course));
+                        if(!flags[i]){
+                            invPairs[j] = {"subject":req.sanitize(pair.Subject), "catalog_nbr":req.sanitize(pair.Course)}
+                            j++;
+                        }
+                        i++
+                    });
+                    var count = 0;
+                    for(let i in invPairs){
+                        count++;
+                    }
+                    if(count>0){
+                        invPairs.forEach(pair=>{
+                            message = ' "'+pair.subject + ' ' + pair.catalog_nbr + '" ' + message;
+                        });
+                        console.log(message)
+                        return res.status(400).send({msg:`${message}`})
+                    }
+                    const schedule = new Schedule({
+                        owner:req.email,
+                        ownerName: ownerName,
+                        name: name,
+                        courses: pairs,
+                        description: desc,
+                        visibility: visibility,
+                        lastmodified: Date.now()
+                    })
+                    schedule.save((err, doc)=>{
+                        if(err){
+                            return res.status(500).send({ msg: err });
+                        }else{
+                            return res.send({msg: 'Schedule created successfully'});
+                        }
+                    })
+                }
+            })
+        }else{
+            res.status(401).send({msg: 'Maximum number of schedules reached'})
+        }
+    });
 });
 
 secure.post('/Schedule/Modify',verifyToken, (req,res)=>{
-    console.log('secured')
+    res.send('secured')
 })
 
 secure.get('/Schedules', verifyToken, (req,res)=>{
@@ -111,22 +122,22 @@ secure.get('/Schedules', verifyToken, (req,res)=>{
 })
 
 secure.get('Courses/Schedule/:Schedule', verifyToken, (req,res)=>{
-    console.log('secure')
+    res.send('secure')
 })
 secure.post('/Schedule/Delete/:schedule', verifyToken, (req, res)=>{
-    console.log('secure')
+    res.send('secure')
 })
 secure.post('/Review/add', verifyToken, (req,res)=>{
-    console.log('secure')
+    res.send('secure')
 })
-restricted.get('/Deactivate',[verifyToken, isAdmin], (req, res)=>{
-    res.send('admin')
+restricted.post('/Deactivate',[verifyToken, isAdmin], (req, res)=>{
+    res.send({msg:'admin'})
 })
 restricted.post('/Review/hide',[verifyToken, isAdmin], (req, res)=>{
-    console.log('admin')
+    res.send('admin')
 })
 restricted.post('/GrantAdmin', [verifyToken, isAdmin], (req, res)=>{
-    console.log('admin')
+    res.send('admin')
 })
 
 open.get('/Search/:subject/:course', (req,res) => {
