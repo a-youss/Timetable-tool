@@ -1,0 +1,22 @@
+<div *ngIf="loginSuccessful==false">
+    <form id="auth">
+        <br>
+        <label>E-mail: </label>
+        <input type="email" #email>
+        <br>
+        <br>
+        <label>Password: </label>
+        <input type="password" #password>
+        <br>
+        <br>
+        <input type="submit" value="Sign In" (click)="login(email.value, password.value)">
+    </form>
+    <br>
+    <a href="/register"><button>Create a new account</button></a>
+    <a href="/"><button>Home</button></a>
+    <p *ngIf="errorMsg"class="error">{{errorMsg}}</p>
+</div>
+<div *ngIf="loginSuccessful==true">
+    <p>Login successful</p>
+    <a href="/"><button>Home</button></a>
+</div>

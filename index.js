@@ -56,13 +56,13 @@ open.put('/register', (req,res)=>{
         passwordConf
     } = body;
     if (!name || !email || !password || !passwordConf) {
-        return res.send({ msg: 'Please enter all fields' });
+        return res.status(404).send({ msg: 'Please enter all fields' });
     }else if (password !== passwordConf) {
-        return res.send({msg:'Passwords do not match'});
+        return res.status(404).send({msg:'Passwords do not match'});
     }else{
         User.findOne({email: email}).then(user=>{
             if(user){
-                return res.send({msg: 'User already registered'})
+                return res.status(404).send({msg: 'User already registered'})
             }else{
                 const doc = new User({
                     name: req.body.name,
@@ -107,22 +107,30 @@ open.post('/login', (req,res)=>{
         password
     } = body;
     if(!email ||!password){
-        return res.status(404).send({ message: "E-mail and password cannot be empty" });
+        return res.status(404).send({ msg: "E-mail and password cannot be empty" });
     }else{
         User.findOne({email: email}).then(user=>{
-            var passwordIsValid = bcrypt.compare(req.body.password,user.password);
-            if (!passwordIsValid){
+            if(user){
+                var passwordIsValid = bcrypt.compareSync(password,user.password);
+                if (!passwordIsValid){
+                    return res.status(401).send({
+                        accessToken: null,
+                        msg: "Invalid Password!"
+                    });
+                }else{
+                    var token = jwt.sign({ email: user.email }, JWT_SECRET);
+                    res.send({
+                        name: user.name,
+                        accessToken: token
+                    })
+                }
+            }else{
                 return res.status(401).send({
                     accessToken: null,
-                    message: "Invalid Password!"
+                    msg: "User Not Found!"
                 });
-            }else{
-                var token = jwt.sign({ email: user.email }, JWT_SECRET);
-                res.send({
-                    name: user.name,
-                    accessToken: token
-                })
             }
+
         })
     }
 });
