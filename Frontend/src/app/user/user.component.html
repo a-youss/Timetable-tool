@@ -17,6 +17,8 @@
     <input type="text" class="addSubject">&nbsp;
     <label>Course</label>&nbsp;
     <input type="text" id="addCourse" class="addCourse">&nbsp;
+    <label>Year Taken</label>&nbsp;
+    <input type="text" id="year" class="year">&nbsp;
     <input type="button" id="AddToList" value="+" (click)="addtoList()">
     <br><br>
     <input type="submit" value="Create" (click)="createSchedule(scheduleName.value,description.value,visibility.value)">
@@ -25,3 +27,50 @@
 <p *ngIf='addErrorMsg' class="error">{{addErrorMsg}}</p>
 <p *ngIf='successMsg' class="success">{{successMsg}}</p>
 <br>
+<div>
+    <h4>My Schedules:</h4>
+    <ul *ngIf='!schedulesMsg' id="Schedules">
+        <li *ngFor="let s of schedules">
+            <span>
+                <button (click)="viewScheduleTimetable(s.name)">{{s.name}}</button>
+            </span>
+        </li>
+    </ul>
+    <p *ngIf='schedulesMsg'>{{schedulesMsg}}</p>
+    <div *ngIf='schedule' class="result">
+        <h3>{{schedule}}</h3>
+        <table>
+            <tr>
+                <th>Subject</th>
+                <th>Course Code</th>
+                <th>Section</th>
+                <th>Component</th>
+                <th>Class Nbr</th>
+                <th>Days</th>
+                <th>Start Time</th>
+                <th>End Time</th>
+                <th>Status</th>
+                <th>Year</th>
+            </tr>
+            <ng-container *ngFor="let s of scheduleTimetable">
+                <ng-container *ngFor="let c of s[0].course_info" >
+                    <tr *ngIf="c.ssr_component==='LEC'">
+                        <td>{{s[0].subject}}</td>
+                        <td>{{s[0].catalog_nbr}}</td>
+                        <td>{{c.class_section}}</td>
+                        <td>{{c.ssr_component}}</td>
+                        <td>{{c.class_nbr}}</td>
+                        <td>
+                            <ng-container *ngFor="let day of c.days">{{day}}</ng-container>
+                        </td>
+                        <td>{{c.start_time}}</td>
+                        <td>{{c.end_time}}</td>
+                        <td>{{c.enrl_stat}}</td>
+                        <td>{{s[1]}}</td>
+                    </tr>
+                </ng-container>
+            </ng-container>
+        </table>
+    </div>
+    <p id="schCorErr" class="error">{{schErrorMsg}}</p>
+</div>

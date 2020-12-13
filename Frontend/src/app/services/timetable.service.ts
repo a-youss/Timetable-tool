@@ -26,6 +26,11 @@ export class TimetableService {
       visibility
     }, httpOptions)
   }
+  
+  getSchedules(): Observable<object[]>{
+    return this.http.get<object[]>(BASE_URL+`secure/Schedules`)
+  }
+
   modifySchedule(name:string, pairs:object[], desc:string, visibility: string): Observable<any>{
     return this.http.post<any>(BASE_URL+`secure/Schedule/Modify`,{
       name,
@@ -34,4 +39,5 @@ export class TimetableService {
       visibility
     }, httpOptions)
   }
+
 }

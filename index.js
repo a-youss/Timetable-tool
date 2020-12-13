@@ -118,7 +118,17 @@ secure.post('/Schedule/Modify',verifyToken, (req,res)=>{
 })
 
 secure.get('/Schedules', verifyToken, (req,res)=>{
-    res.send('secure')
+    owner = req.email;
+    console.log(owner)
+    Schedule.find({owner: owner}, (err, docs)=>{
+        if(err){
+            res.status(404);
+        }else if(docs.length<1){
+            res.status(400).send({msg: "You don't have any course lists"})
+        }else{
+            res.send(docs)
+        }
+    })
 })
 
 secure.get('Courses/Schedule/:Schedule', verifyToken, (req,res)=>{
