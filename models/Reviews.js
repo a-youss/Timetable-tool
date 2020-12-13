@@ -12,6 +12,14 @@ var ScheduleSchema = new mongoose.Schema({
     subject:{
         type: Array,
         required: true
+    },
+    reviewer:{
+        type: String,
+        required: true
+    },
+    visibile:{
+        type: Boolean,
+        required: true
     }
 });
 

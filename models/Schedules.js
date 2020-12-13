@@ -5,15 +5,21 @@ var ScheduleSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    description:{
+        type: String
+    },
     name:{
         type: String,
         required: true
     },
     courses:{
-        type: Array
+        type: Array,
+        required: true
     },
-    access:{
-        type: String
+    visibility:{
+        type: String,
+        required: true
+
     },
     lastmodified:{
         type: Date

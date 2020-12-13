@@ -12,7 +12,7 @@ const bcrypt = require('bcrypt');
 //const stringSimilarity = require('string-similarity');
 const fs = require('fs');
 const User = require('./models/Users');
-const nodemailer = require('nodemailer');
+const Schedule = require('./models/Schedules');
 
 const subjectData = parseData('Lab5-subject-data.json');
 const timetableData = parseData('Lab3-timetable-data.json');
@@ -47,6 +47,88 @@ app.use(function(req, res) {
     );
 });
 
+secure.put('/Schedule/Create', verifyToken, (req,res) =>{
+    res.send('secured')
+    // var name = req.sanitize(req.body.scheduleName);
+    // var pairs = req.body.Courses;
+    // var desc = req.body.desc;
+    // var visibility = req.body.visibility;
+    // Schedule.count({owner: req.email}, (err, count)=>{
+    //     if(err){
+    //         res.status(404);
+    //     }else if(count<20){
+    //         Schedule.findOne({name:name}, (err, doc)=>{
+    //             if(err){
+    //                 res.status(404);
+    //             }else if(doc){
+    //                 res.status(400).send({msg: 'Schedule with this name already exists'})
+    //             }else{
+    //                 let flags = [];
+    //                 let invPairs = []; 
+    //                 let j=0;
+    //                 let message ='pairs do not exist';
+
+    //                 pairs.forEach((pair, i)=>{
+    //                     flags[i] = contains(data, "subject", "catalog_nbr", req.sanitize(pair.Subject), req.sanitize(pair.Course));
+    //                     if(!flags[i]){
+    //                         invPairs[j] = {"subject":req.sanitize(pair.Subject), "catalog_nbr":req.sanitize(pair.Course)}
+    //                         j++;
+    //                     }
+    //                 });
+    //                 var count = 0;
+    //                 for(let i in invPairs){
+    //                     count++;
+    //                 }
+    //                 if(count>0){
+    //                     invPairs.forEach(pair=>{
+    //                         message = ' "'+pair.subject + ' ' + pair.catalog_nbr + '" ' + message;
+    //                     });
+    //                     console.log(message)
+    //                     return res.status(400).send({'message':`${message}`})
+    //                 }
+    //                 const schedule = new Schedule({
+    //                     owner:req.email,
+    //                     name: name,
+    //                     courses: pairs,
+    //                     description: desc,
+    //                     visibility: visibility,
+    //                     lastmodified: Date.now()
+    //                 })
+    //             }
+    //         })
+    //     }else{
+    //         res.status(401).send({msg: 'Maximum number of schedules reached'})
+    //     }
+    // });
+});
+
+secure.post('/Schedule/Modify',verifyToken, (req,res)=>{
+    console.log('secured')
+})
+
+secure.get('/Schedules', verifyToken, (req,res)=>{
+    res.send('secure')
+})
+
+secure.get('Courses/Schedule/:Schedule', verifyToken, (req,res)=>{
+    console.log('secure')
+})
+secure.post('/Schedule/Delete/:schedule', verifyToken, (req, res)=>{
+    console.log('secure')
+})
+secure.post('/Review/add', verifyToken, (req,res)=>{
+    console.log('secure')
+})
+restricted.get('/Deactivate',[verifyToken, isAdmin], (req, res)=>{
+    res.send('admin')
+})
+restricted.post('/Review/hide',[verifyToken, isAdmin], (req, res)=>{
+    console.log('admin')
+})
+restricted.post('/GrantAdmin', [verifyToken, isAdmin], (req, res)=>{
+    console.log('admin')
+})
+
 open.get('/Search/:subject/:course', (req,res) => {
     let subjects = [];
     let result = [];
@@ -78,6 +160,9 @@ open.get('/Search/:subject/:course', (req,res) => {
     }
     return res.send(result)
 });
+
+open.get('/Keywords/:course/:class', (req, res)=>{
+})
 
 open.put('/register', (req,res)=>{
     const {body}=req;
@@ -158,6 +243,7 @@ open.post('/login', (req,res)=>{
                     var token = jwt.sign({ email: user.email }, JWT_SECRET);
                     res.send({
                         name: user.name,
+                        admin: user.admin,
                         accessToken: token
                     })
                 }
@@ -177,22 +263,21 @@ function parseData(filePath) {
     return JSON.parse(file);
 }
 
-function verifyToken(req, res){
-    let token = req.headers["Authorization"];
-  
-    if (!token) {
+function verifyToken(req, res, next){
+    if (!req.headers.authorization) {
       return res.status(400).send({ message: "No token provided!" });
     }else{
-        jwt.verify(token, JWT_SECRET, (err, decoded) => {
+        jwt.verify(req.headers.authorization, JWT_SECRET, (err, decoded) => {
             if (err) {
               return res.status(400).send({ message: "Unauthorized! Login required" });
             }
             req.email = decoded.email;
+            next();
         });
     }
 }
 
-function isAdmin(req, res){
+function isAdmin(req, res, next){
     User.findOne({email: req.email}).exec((err, user)=>{
         if (err) {
             res.status(500).send({ message: err });
@@ -200,8 +285,14 @@ function isAdmin(req, res){
         }else if(!user.admin){
             return res.status(403).send({ message: "Unautharized! Requires admin privelages" });
         }else{
-            return;
+            next();
         }
     });
 }
-  
+
+function contains(arr, key1, key2, val1, val2) {
+    for (var i = 0; i < arr.length; i++) {
+        if(arr[i][key1] === val1 && arr[i][key2] === val2) return true;
+    }
+    return false;
+}

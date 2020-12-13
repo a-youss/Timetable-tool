@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../services/auth.service'; 
+import { TokenService } from '../services/token.service';
 
 @Component({
   selector: 'app-login',
@@ -9,10 +10,16 @@ import { AuthService } from '../services/auth.service';
 export class LoginComponent implements OnInit {
   
   errorMsg = '';
+  isLoggedIn = false;
   loginSuccessful= false;
-  constructor(private authService: AuthService) { }
+  admin=false;
+  constructor(private authService: AuthService, private tokenStorage: TokenService) { }
 
   ngOnInit(): void {
+    if (this.tokenStorage.getToken()) {
+      this.isLoggedIn = true;
+      this.admin = this.tokenStorage.getUser().admin;
+    }
   }
 
   login(email: string, password: string){
@@ -25,7 +32,11 @@ export class LoginComponent implements OnInit {
       if(pattern1.test(email)){
         this.authService.login(email, password).subscribe(
           data => {
+            this.tokenStorage.saveToken(data.accessToken);
+            this.tokenStorage.saveUser(data);
+            this.admin = this.tokenStorage.getUser().admin;
             this.loginSuccessful= true;
+            this.isLoggedIn = true;
             console.log(data);
           },
           err => {
