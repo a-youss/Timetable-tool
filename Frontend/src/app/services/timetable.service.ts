@@ -48,5 +48,8 @@ export class TimetableService {
       review
     })
   }
+  getReviews(subject:string, course:string):Observable<any>{
+    return this.http.get<any>(BASE_URL+`/open/Review/${course}/${subject}`)
+  }
 
 }

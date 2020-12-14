@@ -1,1 +1,17 @@
-<p>admin works!</p>
+<h2>Administration</h2>
+<div *ngFor='let u of users'>
+    <label>Name: {{u.name}}</label>
+    <label>E-mail: {{u.email}}</label>
+    <label>Admin Privelages: {{u.admin}}</label>
+    <select #admin>
+        <option value="true">Give Admin</option>
+        <option value="false">Revoke Admin</option>
+    </select>
+    <label>Deactivated: {{u.deactivated}}</label>
+    <select #deactivated>
+        <option value="false">Activate</option>
+        <option value="true">Deactivate</option>
+    </select>
+    &nbsp;
+    <button (click)='updateUser(u.email, admin.value, deactivated.value)'>Update User</button>
+</div>

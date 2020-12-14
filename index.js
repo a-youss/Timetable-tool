@@ -15,6 +15,7 @@ const User = require('./models/Users');
 const Schedule = require('./models/Schedules');
 const Review = require('./models/Reviews');
 const { time } = require('console');
+const e = require('express');
 
 const subjectData = parseData('Lab5-subject-data.json');
 const timetableData = parseData('Lab3-timetable-data.json');
@@ -166,14 +167,35 @@ secure.post('/Review/add', verifyToken, (req,res)=>{
         })
     }
 })
-restricted.post('/Deactivate',[verifyToken, isAdmin], (req, res)=>{
-    res.send({msg:'admin'})
-})
+
 restricted.post('/Review/hide',[verifyToken, isAdmin], (req, res)=>{
     res.send('admin')
 })
-restricted.post('/GrantAdmin', [verifyToken, isAdmin], (req, res)=>{
-    res.send('admin')
+restricted.post('/UpdateUser', [verifyToken, isAdmin], (req, res)=>{
+    email=req.body.email;
+    admin=req.body.admin;
+    deactivated=req.body.deactivated;
+
+    if(deactivated=="true"){
+        deactivated=true;
+    }else{
+        deactivated=false;
+    }
+    if(admin=="true"){
+        admin=true;
+    }else{
+        admin=false;
+    }
+    User.findOne({email:email},(err, user)=>{
+        if(err){
+            res.send('error')
+        }else{
+            user.deactivated=deactivated;
+            user.admin=admin;
+            user.save()
+            res.send('User updated successfully')
+        }
+    })
 })
 
 open.get('/Search/:subject/:course', (req,res) => {
@@ -208,6 +230,22 @@ open.get('/Search/:subject/:course', (req,res) => {
     res.send(result)
 });
 
+open.get('/Review/:course/:subject', async(req,res)=>{
+    subject = req.params.subject;
+    course = req.params.course;
+    Review.find({subject: subject, course:course, visibile:true}, (err, review)=>{
+        if(err){
+            res.send('error')
+        }else{
+            res.json(review)
+        }
+    })
+})
+open.get('/Users', (req,res)=>{
+    User.find({}, (err, users)=>{
+        res.send(users)
+    })
+})
 open.get('/Keywords/:course/:class', (req, res)=>{
 })
 

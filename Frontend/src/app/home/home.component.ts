@@ -12,7 +12,7 @@ export class HomeComponent implements OnInit {
   isLoggedIn=false;
   ngOnInit(): void {
     this.currentUser=this.token.getUser();
-    console.log(this.currentUser.name)
+    console.log(this.currentUser.admin)
     if(this.currentUser.name){
       this.isLoggedIn=true;
     }else{

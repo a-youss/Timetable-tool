@@ -9,6 +9,7 @@ import { TimetableService } from '../services/timetable.service'
 export class Search1Component implements OnInit {
   errorMsg ='';
   subjects: any;
+  reviews:any;
   constructor(private timetableService: TimetableService) { }
   ngOnInit(): void {
   }
@@ -34,5 +35,13 @@ export class Search1Component implements OnInit {
     }else{
       this.errorMsg = 'Subject must contain 2 to 8 letters (All uppercase) and Course Code must be empty or contain 4 numbers followed by an optional capital letter';
     }
+  }
+  viewReviews(subject: string, course:string){
+    this.reviews=[];
+    this.timetableService.getReviews(subject, course)
+    .subscribe(data=>{
+      this.reviews=data;
+      console.log(data)
+    })
   }
 }
