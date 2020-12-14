@@ -12,6 +12,10 @@ import { AdminComponent } from './admin/admin.component';
 import { Search1Component } from './search1/search1.component'
 import { authInterceptorProviders } from './auth.interceptor';
 import { UserComponent } from './user/user.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {MatDialogModule} from '@angular/material/dialog';
+import { ConfirmComponent } from './confirm/confirm.component';
+
 
 @NgModule({
   declarations: [
@@ -21,13 +25,16 @@ import { UserComponent } from './user/user.component';
     RegisComponent,
     AdminComponent,
     Search1Component,
-    UserComponent
+    UserComponent,
+    ConfirmComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    BrowserAnimationsModule,
+    MatDialogModule
   ],
   providers: [authInterceptorProviders],
   bootstrap: [AppComponent]

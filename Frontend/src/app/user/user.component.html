@@ -33,6 +33,7 @@
         <li *ngFor="let s of schedules">
             <span>
                 <label (click)="viewScheduleTimetable(s.name)">{{s.name}}:</label>
+                <button (click)="deleteDialog(s.name)">Delete</button>
             </span>
         </li>
     </ul>

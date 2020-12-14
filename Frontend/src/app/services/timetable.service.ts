@@ -54,4 +54,7 @@ export class TimetableService {
   getPublicSchedules(): Observable<object[]>{
     return this.http.get<object[]>(BASE_URL+`open/Schedules`)
   }
+  deleteSchedule(schedule:string):Observable<any>{
+    return this.http.delete<any>(BASE_URL+`secure/Delete/${schedule}`)
+  }
 }

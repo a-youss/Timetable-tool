@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { TimetableService } from '../services/timetable.service';
 import { TokenService } from '../services/token.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ConfirmComponent } from '../confirm/confirm.component';
 
 @Component({
   selector: 'app-user',
@@ -19,7 +21,9 @@ export class UserComponent implements OnInit {
   schedules: any;
   scheduleTimetable : any;
   schedule='';
-  constructor(private timetableService: TimetableService, private token: TokenService) { }
+  delErrorMsg='';
+  delSuccessMsg='';
+  constructor(private timetableService: TimetableService, private token: TokenService, public dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.currentUser = this.token.getUser();
@@ -124,7 +128,6 @@ export class UserComponent implements OnInit {
       });
     }
   }
-
   postReview(subject: string, course: string, review: string){
     subject=subject.trim()
     course=course.trim()
@@ -144,5 +147,8 @@ export class UserComponent implements OnInit {
     }else{
       this.revErrorMsg = 'Subject must contain 2 to 8 letters (All uppercase), Course Code must be empty or contain 4 numbers followed by an optional capital letter, and the review must be between 3 and 150 characters';
     }
+  }
+  deleteDialog(name: string){
+    this.dialog.open(ConfirmComponent,{data:{name: name}})
   }
 }
