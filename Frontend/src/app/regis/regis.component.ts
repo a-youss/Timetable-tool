@@ -10,6 +10,8 @@ export class RegisComponent implements OnInit {
   
   errorMsg = '';
   regSuccessful= false;
+  successMsg ='';
+  validated= false;
   constructor(private authService: AuthService) { }
 
   ngOnInit(): void {
@@ -25,7 +27,7 @@ export class RegisComponent implements OnInit {
         this.authService.register(name, email, password, passwordConf).subscribe(
           data => {
             this.regSuccessful= true;
-            console.log(data);
+            this.successMsg= ''+window.location.href+'/'+data.accessToken;
           },err => {
             this.errorMsg = err.error.msg;
             console.log(err.error.msg)
@@ -35,5 +37,15 @@ export class RegisComponent implements OnInit {
         this.errorMsg = 'Please enter a valid email';
       }
     }
+  }
+
+  verifyEmail(email:string){
+    this.authService.verifyEmail(email)
+    .subscribe(()=>{
+      this.validated=true;
+    }, err=>{
+      this.validated=false;
+    })
+
   }
 }

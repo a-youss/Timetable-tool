@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 const TOKEN_KEY = 'auth-token';
 const USER_KEY = 'auth-user';
-
+//https://bezkoder.com/angular-11-jwt-auth/#Setup_App_Module
 @Injectable({
   providedIn: 'root'
 })

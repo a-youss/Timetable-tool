@@ -15,6 +15,7 @@ import { UserComponent } from './user/user.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatDialogModule} from '@angular/material/dialog';
 import { ConfirmComponent } from './confirm/confirm.component';
+import { VerifiedComponent } from './verified/verified.component';
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import { ConfirmComponent } from './confirm/confirm.component';
     AdminComponent,
     Search1Component,
     UserComponent,
-    ConfirmComponent
+    ConfirmComponent,
+    VerifiedComponent
   ],
   imports: [
     BrowserModule,

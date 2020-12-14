@@ -1,25 +1,29 @@
-<form id="auth">
+<div>
+    <form id="auth">
+        <br>
+        <label>Display Name: </label>
+        <input type="text" name="name" #name>
+        <br>
+        <br>
+        <label>E-mail: </label>
+        <input type="text" #email>
+        <br>
+        <br>
+        <label>Password: </label>
+        <input type="password" #password>
+        <br>
+        <br>
+        <label>Password Confirmation: </label>
+        <input type="password" #passwordConf>
+        <br>
+        <br>
+        <input type="submit" value="Sign Up" (click)="register(name.value, email.value, password.value, passwordConf.value)">
+        <br>
+    </form>
     <br>
-    <label>Display Name: </label>
-    <input type="text" name="name" #name>
-    <br>
-    <br>
-    <label>E-mail: </label>
-    <input type="text" #email>
-    <br>
-    <br>
-    <label>Password: </label>
-    <input type="password" #password>
-    <br>
-    <br>
-    <label>Password Confirmation: </label>
-    <input type="password" #passwordConf>
-    <br>
-    <br>
-    <input type="submit" value="Sign Up" (click)="register(name.value, email.value, password.value, passwordConf.value)">
-    <br>
-</form>
-<br>
-<a href="/login"><button>Login instead</button></a>
-<a href="/"><button>Home</button></a>
-<p *ngIf="errorMsg"class="error">{{errorMsg}}</p>
+    <a href="/login"><button>Login instead</button></a>
+    <a href="/"><button>Home</button></a>
+    <p *ngIf="errorMsg"class="error">{{errorMsg}}</p>
+    <p *ngIf="regSuccessful">Registeration was successful, to verify your email please click:</p>   
+    <a href="/verified" (click)="verifyEmail(email.value)">{{successMsg}}</a>
+</div>
