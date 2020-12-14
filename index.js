@@ -133,6 +133,17 @@ secure.get('/Schedules', verifyToken, (req,res)=>{
         }
     })
 })
+open.get('/Schedules', (req,res)=>{
+    Schedule.find({visibility: "public"}, (err, docs)=>{
+        if(err){
+            res.status(404);
+        }else if(docs.length<1){
+            res.status(400).send({msg: "There are no public lists"})
+        }else{
+            res.send(docs)
+        }
+    })
+})
 
 secure.post('/Review/add', verifyToken, (req,res)=>{
     var reviewer = req.body.reviewer;
@@ -166,11 +177,15 @@ secure.delete('/Delete/:schedule', verifyToken, (req,res) => {
     Schedule.findOne({name:name}, (err, doc)=>{
         if(err){
             res.status(500).send({msg:"server error"})
-        }else if(req.email==doc.owner){
-            doc.delete()
-            res.send({msg:"List deleted successfully"})
+        }else if(doc) {
+            if(req.email==doc.owner){
+                doc.delete()
+                res.send({msg:"List deleted successfully"})
+            }else{
+                res.status(400).send({msg: "only the owner can delete a schedule"})
+            }
         }else{
-            res.status(400).send({msg: "only the owner can delete a schedule"})
+            res.status(400).send({msg:"List not found"})
         }
     })
 });
