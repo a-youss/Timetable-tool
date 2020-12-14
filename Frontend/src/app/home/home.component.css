@@ -42,3 +42,41 @@ a.button{
     font-weight: bold;
     text-decoration: none;
 }
+h3{
+    font-size: 1.5em;
+}
+
+h4{
+    font-weight: bold;
+}
+
+li{
+    margin: 3px;
+    list-style: none;
+    width: fit-content;
+    height: fit-content;
+}
+.error{
+    background-color: #f49a9a;
+}
+
+.success{
+	background-color: rgb(139, 242, 139);
+}
+
+.result{
+    background-color: #eeeeee;
+}
+button{
+    margin: 10px;
+}
+table{
+    width: 80%;
+    border: 1px solid black;
+}
+th{
+    font-weight: bold;
+}
+tr, td{
+    text-align: center;
+}

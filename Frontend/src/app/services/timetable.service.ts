@@ -51,5 +51,7 @@ export class TimetableService {
   getReviews(subject:string, course:string):Observable<any>{
     return this.http.get<any>(BASE_URL+`/open/Review/${course}/${subject}`)
   }
-
+  getPublicSchedules(): Observable<object[]>{
+    return this.http.get<object[]>(BASE_URL+`open/Schedules`)
+  }
 }
