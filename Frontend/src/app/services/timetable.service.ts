@@ -17,6 +17,9 @@ export class TimetableService {
   getTimetable(subject: string, course:string): Observable<object[]>{
     return this.http.get<object[]>(BASE_URL+`open/Search/${subject}/${course}`)
   }
+  getTimetableKey(keyword: string): Observable<object[]>{
+    return this.http.get<object[]>(BASE_URL+`open/SearchKey/${keyword}`)
+  }
   createSchedule(owner:string, name:string, pairs:object[], desc:string, visibility: string): Observable<any>{
     return this.http.put<any>(BASE_URL+`secure/Schedule/Create`,{
       owner,

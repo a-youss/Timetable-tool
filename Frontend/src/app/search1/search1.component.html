@@ -8,6 +8,15 @@
     <input type="submit" value="Search" (click)="viewTimetable(searchSubject.value, courseCode.value)">
 </form>
 <br>
+<h3>Search by keyword</h3>
+<br>
+<form id="search">
+    <label>Keyword: </label>
+    <input type="text" #searchKey>&nbsp;
+    <input type="submit" value="Search" (click)="viewTimetableKey(searchKey.value)">
+</form>
+
+<br>
 <div *ngIf="subjects" class="result" id="searchResults">
     <div *ngFor="let s of subjects">
         <span>
@@ -50,10 +59,6 @@
                 <h4>Description</h4>
                 <p>{{s.catalog_description}}</p>
                 <h4>Reviews</h4>
-                <div *ngFor="let r in reviews">
-                    <label>{{r.reviewer}}, {{r.datePosted}}:</label>
-                    <p>{{r.review}}</p>
-                </div>
             </details>
         </span>
     </div>

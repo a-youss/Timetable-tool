@@ -36,12 +36,32 @@ export class Search1Component implements OnInit {
       this.errorMsg = 'Subject must contain 2 to 8 letters (All uppercase) and Course Code must be empty or contain 4 numbers followed by an optional capital letter';
     }
   }
+  viewTimetableKey(keyword: string){
+    keyword=keyword.trim();
+    this.errorMsg ='';
+    var i=0;
+    var pattern = /^.{5,}$/;
+    if(pattern.test(keyword)){
+      this.timetableService.getTimetableKey(keyword)
+      .subscribe((data)=>{
+        this.subjects = data;
+      },
+      (error: ErrorEvent)=>{
+        this.errorMsg = error.error.message;
+      });
+    }else{
+      this.errorMsg="Keyword must be at least 5 characters";
+    }
+  }
+
   viewReviews(subject: string, course:string){
     this.reviews=[];
     this.timetableService.getReviews(subject, course)
     .subscribe(data=>{
       this.reviews=data;
       console.log(data)
+    }, err=>{
+      console.log(err.error.msg)
     })
   }
 }

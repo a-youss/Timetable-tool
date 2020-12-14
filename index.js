@@ -14,8 +14,8 @@ const fs = require('fs');
 const User = require('./models/Users');
 const Schedule = require('./models/Schedules');
 const Review = require('./models/Reviews');
-const { time } = require('console');
 const path = require('path');
+const stringSimilarity = require('string-similarity');
 
 const subjectData = parseData('Lab5-subject-data.json');
 const timetableData = parseData('Lab3-timetable-data.json');
@@ -33,10 +33,10 @@ var db = mongoose.connect('mongodb+srv://db_user:Secretpassw0rd@cluster0.63jsz.m
 });
 
 mongoose.Promise = global.Promise;
-app.use(express.static(path.join(__dirname, 'Frontend/dist/Frontend')));
-app.get(['/login', '/admin', '/register'], (req,res) => {
-     res.sendFile(path.join(__dirname,'/Frontend/dist/Frontend/index.html'));
-});
+// app.use(express.static(path.join(__dirname, 'Frontend/dist/Frontend')));
+// app.get(['/login', '/admin', '/register'], (req,res) => {
+//      res.sendFile(path.join(__dirname,'/Frontend/dist/Frontend/index.html'));
+// });
 
 app.use(expressSanitizer());
 app.use(bodyParser.json());
@@ -256,12 +256,41 @@ open.get('/Search/:subject/:course', (req,res) => {
     res.send(result)
 });
 
+open.get('/SearchKey/:keyword', (req, res)=>{
+    keyword=req.params.keyword;
+    result=[];
+    let i=0;
+    timetableData.forEach(e=>{
+        let name = e.className.split(" ");
+        let code = e.catalog_nbr.toString();
+        if(stringSimilarity.compareTwoStrings(keyword.toUpperCase(), code.toUpperCase())>(code.length-2)/code.length){
+            result[i]=e;
+            i++
+        }else{
+            name.forEach(s=>{
+                console.log(s)  
+                if(s.length>=4){
+                    if(stringSimilarity.compareTwoStrings(keyword.toUpperCase(), s.toUpperCase())>(s.length-2)/s.length){
+                        result[i]=e;
+                        i++
+                        return;
+                    }   
+                }            
+            })
+        } 
+    })
+    if(result.length<1){
+        return res.status(404).send({"message":"No matches were found"});
+    }
+    res.send(result)
+})
+
 open.get('/Review/:course/:subject', async(req,res)=>{
     Review.find({subject:req.params.subject, course:req.params.course,visibile:true}, (err, docs)=>{
         if(err){
             res.status(404);
         }else if(docs.length<1){
-            res.status(400).send({msg: "There are no public lists"})
+            res.status(400).send({msg: "There are no reviews for this course"})
         }else{
             res.send(docs)
         }
@@ -295,7 +324,7 @@ open.put('/register', (req,res)=>{
                 const doc = new User({
                     name: req.body.name,
                     email: req.body.email,
-                    password: req.body.password,
+                    password: bcrypt.hashSync(req.body.password, 10),
                     verified: false,
                     deactivated: false,
                     admin: false
@@ -314,19 +343,18 @@ open.put('/register', (req,res)=>{
     }
 });
 
-// open.get('/verification/:token', async(req,res)=>{
-//     const token = jwt.verify(req.params.token, JWT_SECRET);
-//     User.findOne({email: token.email}).then((err,user)=>{
-//         if(err){
-//             return res.status(404);
-//         }else{
-//             //res.send(user)
-//             // user.verified=true;
-//             // user.save()
-//             //res.send('E-mail verified successfully')
-//         }
-//     })
-// });
+open.post('/verify', (req, res)=>{
+    email=req.body.email
+    User.findOne({email:email},(err, user)=>{
+        if(err){
+            res.send('error')
+        }else{
+            user.verified=true;
+            user.save()
+            res.send('E-mail verified Successfully')
+        }
+    })
+})
 
 open.post('/login', (req,res)=>{
     const {body}=req;
