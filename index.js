@@ -134,12 +134,6 @@ secure.get('/Schedules', verifyToken, (req,res)=>{
     })
 })
 
-secure.get('Courses/Schedule/:Schedule', verifyToken, (req,res)=>{
-    res.send('secure')
-})
-secure.post('/Schedule/Delete/:schedule', verifyToken, (req, res)=>{
-    res.send('secure')
-})
 secure.post('/Review/add', verifyToken, (req,res)=>{
     var reviewer = req.body.reviewer;
     var review = req.body.review;
@@ -167,6 +161,19 @@ secure.post('/Review/add', verifyToken, (req,res)=>{
         })
     }
 })
+secure.delete('/Delete/:schedule', verifyToken, (req,res) => {
+    var name = req.sanitize(req.params.schedule);
+    Schedule.findOne({name:name}, (err, doc)=>{
+        if(err){
+            res.status(500).send({msg:"server error"})
+        }else if(req.email==doc.owner){
+            doc.delete()
+            res.send({msg:"List deleted successfully"})
+        }else{
+            res.status(400).send({msg: "only the owner can delete a schedule"})
+        }
+    })
+});
 
 restricted.post('/Review/hide',[verifyToken, isAdmin], (req, res)=>{
     res.send('admin')
