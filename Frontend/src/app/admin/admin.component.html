@@ -1,4 +1,5 @@
 <h2>Administration</h2>
+<div *ngIf="currentUser.admin">
 <div *ngFor='let u of users'>
     <label>Name: {{u.name}}</label>
     <label>E-mail: {{u.email}}</label>
@@ -14,4 +15,5 @@
     </select>
     &nbsp;
     <button (click)='updateUser(u.email, admin.value, deactivated.value)'>Update User</button>
+</div>
 </div>

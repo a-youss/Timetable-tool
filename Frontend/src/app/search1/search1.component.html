@@ -36,7 +36,7 @@
                     </tr>
                 </ng-container>
             </table>
-            <details>
+            <details (click)="viewReviews(s.subject, s.catalog_nbr)">
                 <summary>More Details</summary>
                 <h4>Instructors</h4>
                 <p>{{s.course_info[0].instructors}}</p>
@@ -50,6 +50,10 @@
                 <h4>Description</h4>
                 <p>{{s.catalog_description}}</p>
                 <h4>Reviews</h4>
+                <div *ngFor="let r in reviews">
+                    <label>{{r.reviewer}}, {{r.datePosted}}:</label>
+                    <p>{{r.review}}</p>
+                </div>
             </details>
         </span>
     </div>

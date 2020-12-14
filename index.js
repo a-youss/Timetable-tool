@@ -15,7 +15,7 @@ const User = require('./models/Users');
 const Schedule = require('./models/Schedules');
 const Review = require('./models/Reviews');
 const { time } = require('console');
-const e = require('express');
+const path = require('path');
 
 const subjectData = parseData('Lab5-subject-data.json');
 const timetableData = parseData('Lab3-timetable-data.json');
@@ -33,6 +33,10 @@ var db = mongoose.connect('mongodb+srv://db_user:Secretpassw0rd@cluster0.63jsz.m
 });
 
 mongoose.Promise = global.Promise;
+app.use(express.static(path.join(__dirname, 'Frontend/dist/Frontend')));
+app.get(['/login', '/admin', '/register'], (req,res) => {
+     res.sendFile(path.join(__dirname,'/Frontend/dist/Frontend/index.html'));
+});
 
 app.use(expressSanitizer());
 app.use(bodyParser.json());
@@ -253,13 +257,13 @@ open.get('/Search/:subject/:course', (req,res) => {
 });
 
 open.get('/Review/:course/:subject', async(req,res)=>{
-    subject = req.params.subject;
-    course = req.params.course;
-    Review.find({subject: subject, course:course, visibile:true}, (err, review)=>{
+    Review.find({subject:req.params.subject, course:req.params.course,visibile:true}, (err, docs)=>{
         if(err){
-            res.send('error')
+            res.status(404);
+        }else if(docs.length<1){
+            res.status(400).send({msg: "There are no public lists"})
         }else{
-            res.json(review)
+            res.send(docs)
         }
     })
 })

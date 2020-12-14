@@ -8,10 +8,11 @@ import { UserService } from '../services/user.service';
   styleUrls: ['./admin.component.css']
 })
 export class AdminComponent implements OnInit {
-
-  constructor(private userService: UserService, private tokenStorage: TokenService) { }
+  currentUser:any;
+  constructor(private userService: UserService, private token: TokenService) { }
   users:any;
   ngOnInit(): void {
+    this.currentUser=this.token.getUser();
     this.userService.getUsers().subscribe(data=>{this.users=data
     console.log(data)})
   }
