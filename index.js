@@ -16,6 +16,7 @@ const Schedule = require('./models/Schedules');
 const Review = require('./models/Reviews');
 const path = require('path');
 const stringSimilarity = require('string-similarity');
+const e = require('express');
 
 const subjectData = parseData('Lab5-subject-data.json');
 const timetableData = parseData('Lab3-timetable-data.json');
@@ -75,7 +76,7 @@ secure.put('/Schedule/Create', verifyToken, (req,res) =>{
                     let invPairs = []; 
                     let j=0;
                     let message ='pairs do not exist';
-                    i=0;
+                    let i=0;
 
                     pairs.forEach((pair,i)=>{
                         flags[i] = contains(timetableData, "subject", "catalog_nbr", req.sanitize(pair.Subject), req.sanitize(pair.Course));
@@ -121,7 +122,50 @@ secure.put('/Schedule/Create', verifyToken, (req,res) =>{
 });
 
 secure.post('/Schedule/Modify',verifyToken, (req,res)=>{
-    res.send('secured')
+    var name = req.sanitize(req.body.name);
+    var desc = req.sanitize(req.body.desc);
+    var pairs = req.body.pairs;
+    var visibility = req.body.visibility;
+    Schedule.findOne({name:name},(err, doc)=>{
+        let flags = [];
+        let invPairs = []; 
+        let j=0;
+        let message ='pairs do not exist';
+        
+        let i=0;
+
+        pairs.forEach((pair,i)=>{
+            flags[i] = contains(timetableData, "subject", "catalog_nbr", req.sanitize(pair.Subject), req.sanitize(pair.Course));
+            if(!flags[i]){
+                invPairs[j] = {"subject":req.sanitize(pair.Subject), "catalog_nbr":req.sanitize(pair.Course)}
+                j++;
+            }
+            i++
+        });
+        var count = 0;
+        for(let i in invPairs){
+            count++;
+        }
+        if(count>0){
+            invPairs.forEach(pair=>{
+                message = ' "'+pair.subject + ' ' + pair.catalog_nbr + '" ' + message;
+            });
+            console.log(message)
+            return res.status(400).send({msg:`${message}`})
+        }
+        if(doc.owner==req.email){
+            doc.visibility=visibility;
+            doc.courses=pairs;
+            doc.description=desc;
+            doc.lastmodified= Date.now();
+            doc.save()
+            return res.send({msg:"Changes sved"})
+        }else{
+            return res.status(400).send({msg:"Only the owner of a list can edit it"})
+
+        }
+    })
+
 })
 
 secure.get('/Schedules', verifyToken, (req,res)=>{
@@ -137,9 +181,38 @@ secure.get('/Schedules', verifyToken, (req,res)=>{
         }
     })
 })
+
+secure.get('/Schedule/:name', verifyToken,(req, res)=>{
+    Schedule.findOne({name: req.params.name},(err,doc)=>{
+        if(err){
+            res.status(404);
+        }else if(doc){
+            courses=doc.courses;
+            result=courses.sort((a,b)=>{
+                if(a.Year>b.Year){
+                    return 1
+                }else if(a.Year<b.Year){
+                    return -1
+                }else if(a.Subject>b.Subject){
+                    return 1
+                }else if(a.Subject<b.Subject){
+                    return -1
+                }else if(a.Course>b.Course){
+                    return 1
+                }else if(a.Course>b.Course){
+                    return -1
+                }else{
+                    return 0;
+                }
+            })
+            res.send(result)
+        }
+    })
+})
+
 open.get('/Schedules', (req,res)=>{
     result = []
-    Schedule.find({visibility: "public"}).limit(10).sort({lastmodified: 1}).exec((err, docs)=>{
+    Schedule.find({visibility: "public"}).limit(10).sort({lastmodified: -1}).exec((err, docs)=>{
         if(err){
             res.status(404);
         }else if(docs.length<1){
@@ -154,8 +227,8 @@ open.get('/Schedules', (req,res)=>{
                 result[i]={"schedule": doc, "courseCount": count}
                 i++
             })
+            res.send(result)
         }
-        res.send(result)
     })
 })
 
@@ -297,9 +370,17 @@ open.get('/SearchKey/:keyword', (req, res)=>{
 })
 
 open.get('/Review/:course/:subject', async (req,res)=>{
-    reviews= await getReviews(req.params.subject, req.params.course)
-    res.send(reviews)
+    Review.find({subject:req.params.subject, course:req.params.course,visibile:true}, (err, docs)=>{
+        if(err){
+            reviews= "db error"
+        }else if(docs.length<1){
+            reviews= "There are no reviews for this course"
+        }else{
+            res.send(docs)
+        }
+    })
 })
+
 open.get('/Users', (req,res)=>{
     User.find({}, (err, users)=>{
         res.send(users)
@@ -438,18 +519,4 @@ function contains(arr, key1, key2, val1, val2) {
         if(arr[i][key1] === val1 && arr[i][key2] === val2) return true;
     }
     return false;
-}
-
-async function getReviews(subject, course){
-    let reviews
-    await Review.find({subject:subject, course:course,visibile:true}, (err, docs)=>{
-        if(err){
-            reviews= "db error"
-        }else if(docs.length<1){
-            reviews= "There are no reviews for this course"
-        }else{
-            reviews=docs
-        }
-    })
-    return reviews;
 }

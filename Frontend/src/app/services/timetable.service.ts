@@ -66,4 +66,12 @@ export class TimetableService {
   getScheduleCourses(schedule:string):Observable<any>{
     return this.http.get<any>(BASE_URL+`secure/Schedule/${schedule}`)
   }
+  editSchedule(name:string, desc:string, pairs:object[], visibility:string):Observable<any>{
+    return this.http.post<any>(BASE_URL+'secure/Schedule/Modify',{
+      name,
+      desc,
+      pairs,
+      visibility
+    }, httpOptions)
+  }
 }

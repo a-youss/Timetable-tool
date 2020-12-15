@@ -3,6 +3,7 @@ import { TimetableService } from '../services/timetable.service';
 import { TokenService } from '../services/token.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmComponent } from '../confirm/confirm.component';
+import { EditComponent } from '../edit/edit.component';
 
 @Component({
   selector: 'app-user',
@@ -133,5 +134,8 @@ export class UserComponent implements OnInit {
   }
   deleteDialog(name: string){
     this.dialog.open(ConfirmComponent,{data:{name: name}})
+  }
+  editDialog(schedule:any){
+    this.dialog.open(EditComponent,{data:{schedule:schedule}})
   }
 }

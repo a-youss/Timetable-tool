@@ -1,1 +1,28 @@
-<p>edit works!</p>
+<h2>Editing {{data.schedule.name}}</h2>
+<form>
+    <label>Description </label>
+    <input type="text" value={{data.schedule.description}} #description>
+    <br><br>
+    <label>Visibility: currently {{data.schedule.visibility}}</label>&nbsp;
+    <select #visibility>
+        <option value="private">Private</option>
+        <option value="public">Public</option>
+    </select>
+    <h3>Courses curently in the list</h3>
+    <div *ngFor="let c of courses">
+        <label>{{c.Subject}} {{c.Course}}</label>&nbsp;
+        <button (click)="removeCourse(c.Subject,c.Course)">Remove</button>
+    </div>
+    <h3>Add a course to this list:</h3>
+    <label>Subject</label>&nbsp;
+    <input type="text" #addSubject>&nbsp;
+    <label>Course</label>&nbsp;
+    <input type="text" #addCourse>&nbsp;
+    <label>Year Taken</label>&nbsp;
+    <input type="text" #year>&nbsp;
+    <button (click)="addCourses(addSubject.value,addCourse.value,year.value)">Add</button>
+    <p *ngIf='addErrorMsg' class="error">{{addErrorMsg}}</p><br><br>
+    <input type="submit" value="Save Changes" (click)="saveChanges(description.value, visibility.value)">
+</form>
+<p *ngIf='errorMsg' class="error">{{errorMsg}}</p><br><br>
+
