@@ -19,6 +19,8 @@ export class HomeComponent implements OnInit {
   schedules: any;
   scheduleTimetable : any;
   schedule='';
+  scheduleCourses:any;
+  description='';
   constructor(private token: TokenService, private timetableService:TimetableService) { }
   isLoggedIn=false;
 
@@ -34,6 +36,7 @@ export class HomeComponent implements OnInit {
   }
 
   viewSchedules(){
+    this.schedules=[];
     this.timetableService.getPublicSchedules()
     .subscribe((schedules) =>{
       this.schedules=schedules;
@@ -41,24 +44,37 @@ export class HomeComponent implements OnInit {
       this.schedulesMsg=err.error.msg
     })
   }
-  viewScheduleTimetable(mySName: string){
-    this.schedule = mySName.trim();
+
+  viewCourses(name: string){
+    this.schedule = name;
     this.scheduleTimetable = [];
-    var pattern = /^\p{L}{1,10}[1-9]{0,2}$/u
-    if(pattern.test(this.schedule)){
-      this.schedules.forEach((schedule: any) =>{
-        schedule.courses.forEach((course: any) => {
-          this.timetableService.getTimetable(course.Subject, course.Course)
-          .subscribe((courses: object[])=>{
-            courses.push(course.Year)
-            this.scheduleTimetable.push(courses);
-          }, (error: ErrorEvent) =>{
-            this.schErrorMsg = error.error.message;
+    this.scheduleCourses=[];
+    this.description='';
+    this.timetableService.getPublicSchedules()
+    .subscribe((schedules) =>{
+      schedules.forEach((schedule: any) => {
+        if(schedule.schedule.name==name){
+          this.scheduleCourses=schedule.schedule.courses;
+          if(schedule.schedule.description){
+            this.description=schedule.schedule.description;
+          }
+          schedule.schedule.courses.forEach((course: any) => {
+            this.timetableService.getTimetable(course.Subject, course.Course)
+            .subscribe((courses: object[])=>{
+              courses.push(course.Year)
+              this.scheduleTimetable.push(courses);
+            }, (error: ErrorEvent) =>{
+              this.schErrorMsg = error.error.message;
+            });
           });
-        });
+        }
       });
-    }
+    }, err=>{
+      this.schedulesMsg=err.error.msg
+    })
+    console.log(this.scheduleCourses)
   }
+
   logOut(){
     this.token.signOut()
     location.reload()

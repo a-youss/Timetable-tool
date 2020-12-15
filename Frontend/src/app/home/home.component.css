@@ -71,7 +71,7 @@ button{
     margin: 10px;
 }
 table{
-    width: 80%;
+    width: 100%;
     border: 1px solid black;
 }
 th{
@@ -79,4 +79,7 @@ th{
 }
 tr, td{
     text-align: center;
+}
+details{
+    width: 100%;
 }

@@ -138,14 +138,24 @@ secure.get('/Schedules', verifyToken, (req,res)=>{
     })
 })
 open.get('/Schedules', (req,res)=>{
-    Schedule.find({visibility: "public"}, (err, docs)=>{
+    result = []
+    Schedule.find({visibility: "public"}).limit(10).sort({lastmodified: 1}).exec((err, docs)=>{
         if(err){
             res.status(404);
         }else if(docs.length<1){
             res.status(400).send({msg: "There are no public lists"})
         }else{
-            res.send(docs)
+            i=0;
+            docs.forEach(doc=>{
+                let count=0;
+                for(let c in doc.courses){
+                    count++
+                }
+                result[i]={"schedule": doc, "courseCount": count}
+                i++
+            })
         }
+        res.send(result)
     })
 })
 
@@ -224,18 +234,19 @@ restricted.post('/UpdateUser', [verifyToken, isAdmin], (req, res)=>{
     })
 })
 
-open.get('/Search/:subject/:course', (req,res) => {
+open.get('/Search/:subject/:course', async(req,res) => {
     let subjects = [];
     let result = [];
     let i = 0;
     let subject = req.sanitize(req.params.subject);
     let course = req.sanitize(req.params.course);
-
-    timetableData.forEach(e => {
-    if(e.subject==subject){
-        subjects[i] = e;
-        i++;
-    }});
+    
+    timetableData.forEach(async(e) => {
+        if(e.subject==subject){
+            subjects[i] = e;
+            i++;
+        }
+    });
     if(subjects.length<1){
         return res.status(404).send({"message":'Subject not found'});
     }
@@ -285,16 +296,9 @@ open.get('/SearchKey/:keyword', (req, res)=>{
     res.send(result)
 })
 
-open.get('/Review/:course/:subject', async(req,res)=>{
-    Review.find({subject:req.params.subject, course:req.params.course,visibile:true}, (err, docs)=>{
-        if(err){
-            res.status(404);
-        }else if(docs.length<1){
-            res.status(400).send({msg: "There are no reviews for this course"})
-        }else{
-            res.send(docs)
-        }
-    })
+open.get('/Review/:course/:subject', async (req,res)=>{
+    reviews= await getReviews(req.params.subject, req.params.course)
+    res.send(reviews)
 })
 open.get('/Users', (req,res)=>{
     User.find({}, (err, users)=>{
@@ -434,4 +438,18 @@ function contains(arr, key1, key2, val1, val2) {
         if(arr[i][key1] === val1 && arr[i][key2] === val2) return true;
     }
     return false;
+}
+
+async function getReviews(subject, course){
+    let reviews
+    await Review.find({subject:subject, course:course,visibile:true}, (err, docs)=>{
+        if(err){
+            reviews= "db error"
+        }else if(docs.length<1){
+            reviews= "There are no reviews for this course"
+        }else{
+            reviews=docs
+        }
+    })
+    return reviews;
 }
