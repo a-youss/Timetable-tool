@@ -23,6 +23,7 @@ export class UserComponent implements OnInit {
   schedule:any;
   delErrorMsg='';
   delSuccessMsg='';
+  scheduleCourses='';
   constructor(private timetableService: TimetableService, private token: TokenService, public dialog: MatDialog) { }
 
   ngOnInit(): void {
@@ -93,18 +94,21 @@ export class UserComponent implements OnInit {
         schedules.forEach((schedule: any) =>{
           if(schedule.name==name){
             this.schedule=schedule;
-            schedule.courses.forEach((course: any) => {
-              this.timetableService.getTimetable(course.Subject, course.Course)
-              .subscribe((courses: object[])=>{
-                courses.push(course.Year)
-                this.scheduleTimetable.push(courses);
-              }, (error: ErrorEvent) =>{
-                this.schErrorMsg = error.error.message;
+            this.timetableService.getScheduleCourses(schedule.name)
+            .subscribe((courses)=>{
+              courses.forEach((course: any) => {
+                this.timetableService.getTimetable(course.Subject, course.Course)
+                .subscribe((courses: object[])=>{
+                  this.scheduleTimetable.push({courses, year:course.Year});
+                }, (error: ErrorEvent) =>{
+                  this.schErrorMsg = error.error.message;
+                });
               });
-            });
+            })
           }
         });
       })
+      console.log(this.scheduleTimetable)
     }
   }
   postReview(subject: string, course: string, review: string){

@@ -63,4 +63,7 @@ export class TimetableService {
   deleteSchedule(schedule:string):Observable<any>{
     return this.http.delete<any>(BASE_URL+`secure/Delete/${schedule}`)
   }
+  getScheduleCourses(schedule:string):Observable<any>{
+    return this.http.get<any>(BASE_URL+`secure/Schedule/${schedule}`)
+  }
 }

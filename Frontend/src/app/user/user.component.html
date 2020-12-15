@@ -65,7 +65,7 @@
         <h3>{{schedule.name}}</h3>
         <p *ngIf="schedule.description">Description: {{schedule.description}}</p>
         <p>Visibility: {{schedule.visibility}}</p>
-        <p *ngIf="schedule.description">Last Modified: {{schedule.lastmodified}}</p>
+        <p>Last Modified: {{schedule.lastmodified | date:"dd/MM/yy HH:mm z"}}</p>
         <table>
             <tr>
                 <th>Subject</th>
@@ -80,10 +80,10 @@
                 <th>Year</th>
             </tr>
             <ng-container *ngFor="let s of scheduleTimetable">
-                <ng-container *ngFor="let c of s[0].course_info" >
-                    <tr ng>
-                        <td>{{s[0].subject}}</td>
-                        <td>{{s[0].catalog_nbr}}</td>
+                <ng-container *ngFor="let c of s.courses[0].course_info" >
+                    <tr>
+                        <td>{{s.courses[0].subject}}</td>
+                        <td>{{s.courses[0].catalog_nbr}}</td>
                         <td>{{c.class_section}}</td>
                         <td>{{c.ssr_component}}</td>
                         <td>{{c.class_nbr}}</td>
@@ -93,7 +93,7 @@
                         <td>{{c.start_time}}</td>
                         <td>{{c.end_time}}</td>
                         <td>{{c.enrl_stat}}</td>
-                        <td>{{s[1]}}</td>
+                        <td>{{s.year}}</td>
                     </tr>
                 </ng-container>
             </ng-container>
