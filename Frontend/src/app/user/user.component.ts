@@ -20,7 +20,7 @@ export class UserComponent implements OnInit {
   currentUser:any;
   schedules: any;
   scheduleTimetable : any;
-  schedule='';
+  schedule:any;
   delErrorMsg='';
   delSuccessMsg='';
   constructor(private timetableService: TimetableService, private token: TokenService, public dialog: MatDialog) { }
@@ -28,37 +28,6 @@ export class UserComponent implements OnInit {
   ngOnInit(): void {
     this.currentUser = this.token.getUser();
     this.viewSchedules()
-  }
-
-  addtoList(){
-    var target = document.getElementById('AddToList');
-    var subl = document.createElement('label');
-    var corl = document.createElement('label');
-    var subi = document.createElement('input');
-    var cori = document.createElement('input');
-    var yrl = document.createElement('label');
-    var yri = document.createElement('input');
-    subi.setAttribute("type", "text");
-    cori.setAttribute("type", "text");
-    subi.setAttribute("class", "addSubject");
-    cori.setAttribute("class", "addCourse");
-    cori.setAttribute("type", "text");
-    subi.setAttribute("class", "year");
-    var sub = document.createTextNode('Subject ');
-    var cor = document.createTextNode(' Course ');
-    var yr = document.createTextNode(' Year Taken ');
-    subl.appendChild(sub);
-    corl.appendChild(cor);
-    yrl.appendChild(yr);
-    if(target?.parentNode){
-      target.parentNode.insertBefore(document.createElement('br'), target);
-      target.parentNode.insertBefore(subl, target);
-      target.parentNode.insertBefore(subi, target);
-      target.parentNode.insertBefore(corl, target);
-      target.parentNode.insertBefore(cori, target);
-      target.parentNode.insertBefore(yrl, target);
-      target.parentNode.insertBefore(yri, target);
-    }
   }
 
   createSchedule(name: string, desc: string, visibility:string){
@@ -74,13 +43,16 @@ export class UserComponent implements OnInit {
       var courses = document.querySelectorAll('.addCourse');
       var year = document.querySelectorAll('.year');
       this.pairs = [];
-  
+      console.log(subjects)
       subjects.forEach((object, i) =>{
         var x = new Object({"Subject":(<HTMLInputElement>object).value, "Course":(<HTMLInputElement>courses[i]).value, "Year":(<HTMLInputElement>year[i]).value});
+        console.log(x)
         var pattern1 = /^[A-Z]{2,8}$/;
         var pattern2 =/^\d{4}[A-Z]{0,1}$/;
         var pattern3 = /^[123456]?$/;
-        if(pattern1.test((<HTMLInputElement>object).value)&&pattern2.test((<HTMLInputElement>courses[i]).value)&&(pattern3.test((<HTMLInputElement>year[i]).value))){
+        if((i>0&&(<HTMLInputElement>object).value=="")){
+          return;
+        }else if((pattern1.test((<HTMLInputElement>object).value)&&pattern2.test((<HTMLInputElement>courses[i]).value)&&(pattern3.test((<HTMLInputElement>year[i]).value)))){
             this.pairs.push(x);
         }else{
             this.addErrorMsg ='Subject must contain 2 to 8 letters (All uppercase), Course Code must be empty or contain 4 numbers followed by an optional capital letter, year must be left empty or be a number between 1-6'
@@ -111,21 +83,28 @@ export class UserComponent implements OnInit {
   }
 
   viewScheduleTimetable(mySName: string){
-    this.schedule = mySName.trim();
+    let name = mySName.trim();
     this.scheduleTimetable = [];
+    this.schedule=[];
     var pattern = /^\p{L}{1,10}[1-9]{0,2}$/u
-    if(pattern.test(this.schedule)){
-      this.schedules.forEach((schedule: any) =>{
-        schedule.courses.forEach((course: any) => {
-          this.timetableService.getTimetable(course.Subject, course.Course)
-          .subscribe((courses: object[])=>{
-            courses.push(course.Year)
-            this.scheduleTimetable.push(courses);
-          }, (error: ErrorEvent) =>{
-            this.schErrorMsg = error.error.message;
-          });
+    if(pattern.test(name)){
+      this.timetableService.getSchedules()
+      .subscribe((schedules) =>{
+        schedules.forEach((schedule: any) =>{
+          if(schedule.name==name){
+            this.schedule=schedule;
+            schedule.courses.forEach((course: any) => {
+              this.timetableService.getTimetable(course.Subject, course.Course)
+              .subscribe((courses: object[])=>{
+                courses.push(course.Year)
+                this.scheduleTimetable.push(courses);
+              }, (error: ErrorEvent) =>{
+                this.schErrorMsg = error.error.message;
+              });
+            });
+          }
         });
-      });
+      })
     }
   }
   postReview(subject: string, course: string, review: string){

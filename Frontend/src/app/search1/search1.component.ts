@@ -27,7 +27,6 @@ export class Search1Component implements OnInit {
       this.timetableService.getTimetable(subject,course)
       .subscribe((data)=>{
         this.subjects = data;
-        console.log(data)
       },
       (error: ErrorEvent)=>{
         this.errorMsg = error.error.message;
@@ -54,14 +53,7 @@ export class Search1Component implements OnInit {
     }
   }
 
-  viewReviews(subject: string, course:string){
-    this.reviews=[];
-    this.timetableService.getReviews(subject, course)
-    .subscribe(data=>{
-      this.reviews=data;
-      console.log(data)
-    }, err=>{
-      console.log(err.error.msg)
-    })
-  }
+  // async viewReviews(subject: string, course:string){
+  //   await this.timetableService.getReviews(subject, course).then(data=>{console.log(data)})
+  // }
 }

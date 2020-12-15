@@ -18,8 +18,31 @@
     <label>Course</label>&nbsp;
     <input type="text" id="addCourse" class="addCourse">&nbsp;
     <label>Year Taken</label>&nbsp;
-    <input type="text" id="year" class="year">&nbsp;
-    <input type="button" id="AddToList" value="+" (click)="addtoList()">
+    <input type="text" id="year" class="year"><br>
+    <label>Subject</label>&nbsp;
+    <input type="text" class="addSubject">&nbsp;
+    <label>Course</label>&nbsp;
+    <input type="text" id="addCourse" class="addCourse">&nbsp;
+    <label>Year Taken</label>&nbsp;
+    <input type="text" id="year" class="year"><br>
+    <label>Subject</label>&nbsp;
+    <input type="text" class="addSubject">&nbsp;
+    <label>Course</label>&nbsp;
+    <input type="text" id="addCourse" class="addCourse">&nbsp;
+    <label>Year Taken</label>&nbsp;
+    <input type="text" id="year" class="year"><br>
+    <label>Subject</label>&nbsp;
+    <input type="text" class="addSubject">&nbsp;
+    <label>Course</label>&nbsp;
+    <input type="text" id="addCourse" class="addCourse">&nbsp;
+    <label>Year Taken</label>&nbsp;
+    <input type="text" id="year" class="year"><br>
+    <label>Subject</label>&nbsp;
+    <input type="text" class="addSubject">&nbsp;
+    <label>Course</label>&nbsp;
+    <input type="text" id="addCourse" class="addCourse">&nbsp;
+    <label>Year Taken</label>&nbsp;
+    <input type="text" id="year" class="year"><br>
     <br><br>
     <input type="submit" value="Create" (click)="createSchedule(scheduleName.value,description.value,visibility.value)">
 </form>
@@ -32,14 +55,17 @@
     <ul *ngIf='!schedulesMsg' id="Schedules">
         <li *ngFor="let s of schedules">
             <span>
-                <label (click)="viewScheduleTimetable(s.name)">{{s.name}}:</label>
+                <label (click)="viewScheduleTimetable(s.name)">{{s.name}} </label>
                 <button (click)="deleteDialog(s.name)">Delete</button>
             </span>
         </li>
     </ul>
     <p *ngIf='schedulesMsg'>{{schedulesMsg}}</p>
     <div *ngIf='schedule' class="result">
-        <h3>{{schedule}}</h3>
+        <h3>{{schedule.name}}</h3>
+        <p *ngIf="schedule.description">Description: {{schedule.description}}</p>
+        <p>Visibility: {{schedule.visibility}}</p>
+        <p *ngIf="schedule.description">Last Modified: {{schedule.lastmodified}}</p>
         <table>
             <tr>
                 <th>Subject</th>
@@ -55,7 +81,7 @@
             </tr>
             <ng-container *ngFor="let s of scheduleTimetable">
                 <ng-container *ngFor="let c of s[0].course_info" >
-                    <tr *ngIf="c.ssr_component==='LEC'">
+                    <tr ng>
                         <td>{{s[0].subject}}</td>
                         <td>{{s[0].catalog_nbr}}</td>
                         <td>{{c.class_section}}</td>

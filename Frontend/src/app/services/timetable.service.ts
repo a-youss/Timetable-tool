@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { promise } from 'protractor';
 
 const BASE_URL = 'http://localhost:3000/';
 const httpOptions = {
@@ -51,9 +52,11 @@ export class TimetableService {
       review
     })
   }
-  getReviews(subject:string, course:string):Observable<any>{
-    return this.http.get<any>(BASE_URL+`/open/Review/${course}/${subject}`)
-  }
+  // async getReviews(subject:string, course:string):Promise<any>{
+  //   let promise= await this.http.get<any>(BASE_URL+`/open/Review/${course}/${subject}`).toPromise()
+  //   console.log(promise.json())
+  //   return promise
+  // }
   getPublicSchedules(): Observable<object[]>{
     return this.http.get<object[]>(BASE_URL+`open/Schedules`)
   }
