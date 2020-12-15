@@ -9,7 +9,6 @@ const open = express.Router();
 const secure = express.Router();
 const restricted = express.Router();
 const bcrypt = require('bcrypt');
-//const stringSimilarity = require('string-similarity');
 const fs = require('fs');
 const User = require('./models/Users');
 const Schedule = require('./models/Schedules');
@@ -34,10 +33,10 @@ var db = mongoose.connect('mongodb+srv://db_user:Secretpassw0rd@cluster0.63jsz.m
 });
 
 mongoose.Promise = global.Promise;
-// app.use(express.static(path.join(__dirname, 'Frontend/dist/Frontend')));
-// app.get(['/login', '/admin', '/register'], (req,res) => {
-//      res.sendFile(path.join(__dirname,'/Frontend/dist/Frontend/index.html'));
-// });
+app.use(express.static(path.join(__dirname, 'Frontend/dist/Frontend')));
+app.get(['/login', '/admin', '/register', '/verified'], (req,res) => {
+     res.sendFile(path.join(__dirname,'/Frontend/dist/Frontend/index.html'));
+});
 
 app.use(expressSanitizer());
 app.use(bodyParser.json());
@@ -483,6 +482,11 @@ open.post('/login', (req,res)=>{
                     return res.status(401).send({
                         accessToken: null,
                         msg: "User deactivated, Contact admin@uwo.ca"
+                    });
+                }else if(!user.verified){
+                    return res.status(401).send({
+                        accessToken: null,
+                        msg: "Please verify your e-mail"
                     });
                 }else{
                     var token = jwt.sign({ email: user.email }, JWT_SECRET);
