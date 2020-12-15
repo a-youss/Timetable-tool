@@ -1,6 +1,7 @@
-<h2>Administration</h2>
-<a href="/"><button>Home</button></a>
+<h2>Administration</h2><br>
+<a href="/"><button>Home</button></a><br><br>
 <div *ngIf="currentUser.admin">
+<h2>Users</h2>
 <div *ngFor='let u of users'>
     <label>Name: {{u.name}}</label>
     <label>E-mail: {{u.email}}</label>
@@ -16,5 +17,12 @@
     </select>
     &nbsp;
     <button (click)='updateUser(u.email, admin.value, deactivated.value)'>Update User</button>
+</div><br><br>
+<h2>Reviews</h2>
+<div>
+    <div *ngFor="let r of reviews">
+        <p class="info">Posted by {{r.reviewer}} on {{r.datePosted | date:"dd/MM/yy HH:mm z"}}  <button *ngIf='r.visibile' (click)='updateReview(r._id, false)'>Hide</button>&nbsp;<button *ngIf='!r.visibile' (click)='updateReview(r._id, true)'>Unhide</button></p>
+        <p class="review">{{r.review}}</p>
+    </div>
 </div>
 </div>

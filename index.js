@@ -278,6 +278,18 @@ secure.delete('/Delete/:schedule', verifyToken, (req,res) => {
 });
 
 restricted.post('/Review/update',[verifyToken, isAdmin], (req, res)=>{
+    id=req.body.id;
+    visible=req.body.visible;
+
+    Review.findById(id,(err,doc)=>{
+        if(err){
+            res.status(500)
+        }else{
+            doc.visibile=visible;
+            doc.save()
+            res.send({msg:"Visibility updated"})
+        }
+    })
 })
 restricted.get('/Reviews', [verifyToken, isAdmin],(req,res)=>{
     Review.find({}, (err, docs)=>{
@@ -390,7 +402,7 @@ open.get('/Review/:course/:subject', async (req,res)=>{
         }
     })
 })
-open.get('/Users', (req,res)=>{
+restricted.get('/Users',[verifyToken, isAdmin], (req,res)=>{
     User.find({}, (err, users)=>{
         res.send(users)
     })

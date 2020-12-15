@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { promise } from 'protractor';
 
-const BASE_URL = 'http://localhost:3000/';
+const BASE_URL = '/';
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' })
 };
@@ -54,6 +53,15 @@ export class TimetableService {
   }
   getReviews(subject:string, course:string):Observable<any>{
     return this.http.get<any>(BASE_URL+`open/Review/${course}/${subject}`)
+  }
+  getAllReviews():Observable<any>{
+    return this.http.get<any>(BASE_URL+`admin/Reviews`)
+  }
+  updateReview(id:string, visible:boolean):Observable<any>{
+    return this.http.post<any>(BASE_URL+'admin/Review/update',{
+      id,
+      visible
+    }, httpOptions)
   }
   getPublicSchedules(): Observable<object[]>{
     return this.http.get<object[]>(BASE_URL+`open/Schedules`)

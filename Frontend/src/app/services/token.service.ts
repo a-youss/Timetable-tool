@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 const TOKEN_KEY = 'auth-token';
 const USER_KEY = 'auth-user';
 //https://bezkoder.com/angular-11-jwt-auth/#Setup_App_Module
+//Used this tutorials code to handle jwt on the angular side
 @Injectable({
   providedIn: 'root'
 })
