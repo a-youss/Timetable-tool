@@ -1,0 +1,3 @@
+<p>are you sure you want to post this course review</p>
+<button (click)="postReview(data.subject, data.course, data.review, data.user)">Yes</button>
+<p *ngIf='revErrorMsg' class="error">{{revErrorMsg}}</p>

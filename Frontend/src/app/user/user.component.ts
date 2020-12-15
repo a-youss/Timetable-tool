@@ -4,6 +4,7 @@ import { TokenService } from '../services/token.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmComponent } from '../confirm/confirm.component';
 import { EditComponent } from '../edit/edit.component';
+import { ReviewConfirmComponent } from '../review-confirm/review-confirm.component';
 
 @Component({
   selector: 'app-user',
@@ -17,13 +18,12 @@ export class UserComponent implements OnInit {
   schedulesMsg='';
   schErrorMsg='';
   revErrorMsg='';
+  revSuccessMsg='';
   pairs: any;
   currentUser:any;
   schedules: any;
   scheduleTimetable : any;
   schedule:any;
-  delErrorMsg='';
-  delSuccessMsg='';
   scheduleCourses='';
   constructor(private timetableService: TimetableService, private token: TokenService, public dialog: MatDialog) { }
 
@@ -36,9 +36,6 @@ export class UserComponent implements OnInit {
     name = name.trim();
     desc = desc.trim();
     visibility = visibility.trim();
-    this.successMsg ='';
-    this.errorMsg ='';
-    this.addErrorMsg ='';
     var pattern = /^\p{L}{1,10}[1-9]{0,2}$/u
     if(pattern.test(name)){
       var subjects = document.querySelectorAll('.addSubject');
@@ -112,7 +109,8 @@ export class UserComponent implements OnInit {
       console.log(this.scheduleTimetable)
     }
   }
-  postReview(subject: string, course: string, review: string){
+
+  reviewDialog(subject:string, course:string, review:string){
     subject=subject.trim()
     course=course.trim()
     review=review.trim()
@@ -120,14 +118,7 @@ export class UserComponent implements OnInit {
     var pattern2 =/^\d{4}[A-Z]{0,1}$/;
     var pattern3 = /^.{3,150}$/u;
     if(pattern1.test(subject)&&pattern2.test(course)&&pattern3.test(review)){
-      this.timetableService.addReview(subject,course,review, this.currentUser.name)
-      .subscribe((res)=>{
-        if(res.msg){
-          console.log(res)
-        }
-      },(error: ErrorEvent) => {
-        this.revErrorMsg =error.error.msg;
-      });
+      this.dialog.open(ReviewConfirmComponent,{data:{subject: subject, course:course, review:review, user: this.currentUser}})
     }else{
       this.revErrorMsg = 'Subject must contain 2 to 8 letters (All uppercase), Course Code must be empty or contain 4 numbers followed by an optional capital letter, and the review must be between 3 and 150 characters';
     }

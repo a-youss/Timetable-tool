@@ -45,7 +45,7 @@
                     </tr>
                 </ng-container>
             </table>
-            <details>
+            <details (click)="viewReviews(s.subject,s.catalog_nbr)">
                 <summary>More Details</summary>
                 <h4>Instructors</h4>
                 <p>{{s.course_info[0].instructors}}</p>
@@ -59,6 +59,15 @@
                 <h4>Description</h4>
                 <p>{{s.catalog_description}}</p>
                 <h4>Reviews</h4>
+                <div *ngIf="reviewsMsg">
+                    <p>{{reviewsMsg}}</p>
+                </div>
+                <div *ngIf="!reviewsMsg">
+                    <div *ngFor="let r of reviews">
+                        <p class="info">Posted by {{r.reviewer}} on {{r.datePosted | date:"dd/MM/yy HH:mm z"}}</p>
+                        <p class="review">{{r.review}}</p>
+                   </div>
+                </div>
             </details>
         </span>
     </div>

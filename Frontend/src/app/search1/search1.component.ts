@@ -8,6 +8,7 @@ import { TimetableService } from '../services/timetable.service'
 })
 export class Search1Component implements OnInit {
   errorMsg ='';
+  reviewsMsg='';
   subjects: any;
   reviews:any;
   constructor(private timetableService: TimetableService) { }
@@ -53,7 +54,13 @@ export class Search1Component implements OnInit {
     }
   }
 
-  // async viewReviews(subject: string, course:string){
-  //   await this.timetableService.getReviews(subject, course).then(data=>{console.log(data)})
-  // }
+  viewReviews(subject: string, course:string){
+    this.reviews='';
+    this.timetableService.getReviews(subject, course).subscribe(data=>{
+      this.reviews=data
+    },
+    (error: ErrorEvent)=>{
+      this.reviewsMsg = error.error.message;
+    });
+  }
 }

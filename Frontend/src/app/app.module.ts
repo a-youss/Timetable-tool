@@ -17,6 +17,7 @@ import {MatDialogModule} from '@angular/material/dialog';
 import { ConfirmComponent } from './confirm/confirm.component';
 import { VerifiedComponent } from './verified/verified.component';
 import { EditComponent } from './edit/edit.component';
+import { ReviewConfirmComponent } from './review-confirm/review-confirm.component';
 
 
 @NgModule({
@@ -30,7 +31,8 @@ import { EditComponent } from './edit/edit.component';
     UserComponent,
     ConfirmComponent,
     VerifiedComponent,
-    EditComponent
+    EditComponent,
+    ReviewConfirmComponent
   ],
   imports: [
     BrowserModule,

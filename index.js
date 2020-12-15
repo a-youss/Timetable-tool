@@ -239,7 +239,7 @@ secure.post('/Review/add', verifyToken, (req,res)=>{
     var course = req.body.course;
 
     flag = contains(timetableData, "subject", "catalog_nbr", subject, course);
-    if(flag){
+    if(!flag){
         res.status(400).send({msg:'Course does not exist'})
     }else{
         const doc = new Review({
@@ -277,8 +277,18 @@ secure.delete('/Delete/:schedule', verifyToken, (req,res) => {
     })
 });
 
-restricted.post('/Review/hide',[verifyToken, isAdmin], (req, res)=>{
-    res.send('admin')
+restricted.post('/Review/update',[verifyToken, isAdmin], (req, res)=>{
+})
+restricted.get('/Reviews', [verifyToken, isAdmin],(req,res)=>{
+    Review.find({}, (err, docs)=>{
+        if(err){
+            res.status(500);
+        }else if(docs.length<1){
+            res.status(400).send({msg:"There are no reviews"}) 
+        }else{
+            res.send(docs)
+        }
+    })
 })
 restricted.post('/UpdateUser', [verifyToken, isAdmin], (req, res)=>{
     email=req.body.email;
@@ -372,15 +382,14 @@ open.get('/SearchKey/:keyword', (req, res)=>{
 open.get('/Review/:course/:subject', async (req,res)=>{
     Review.find({subject:req.params.subject, course:req.params.course,visibile:true}, (err, docs)=>{
         if(err){
-            reviews= "db error"
+            res.status(500);
         }else if(docs.length<1){
-            reviews= "There are no reviews for this course"
+            res.status(400).send({msg:"There are no reviews for this course"}) 
         }else{
             res.send(docs)
         }
     })
 })
-
 open.get('/Users', (req,res)=>{
     User.find({}, (err, users)=>{
         res.send(users)

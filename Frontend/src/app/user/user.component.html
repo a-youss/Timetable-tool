@@ -112,6 +112,6 @@
     <label>Review: </label>
     <textarea #review></textarea>
     <br><br>
-    <input type="submit" value="Post Review" (click)="postReview(searchSubject.value, courseCode.value, review.value)">
+    <input type="submit" value="Post Review" (click)="reviewDialog(searchSubject.value, courseCode.value, review.value)">
 </form>
 <p *ngIf='revErrorMsg' class="error">{{revErrorMsg}}</p>

@@ -52,11 +52,9 @@ export class TimetableService {
       review
     })
   }
-  // async getReviews(subject:string, course:string):Promise<any>{
-  //   let promise= await this.http.get<any>(BASE_URL+`/open/Review/${course}/${subject}`).toPromise()
-  //   console.log(promise.json())
-  //   return promise
-  // }
+  getReviews(subject:string, course:string):Observable<any>{
+    return this.http.get<any>(BASE_URL+`open/Review/${course}/${subject}`)
+  }
   getPublicSchedules(): Observable<object[]>{
     return this.http.get<object[]>(BASE_URL+`open/Schedules`)
   }

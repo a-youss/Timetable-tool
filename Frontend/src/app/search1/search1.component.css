@@ -46,9 +46,9 @@ th{
 tr, td{
     text-align: center;
 }
-.LAB{
+.info{
     background-color: #82b1bf;
 }
-.TUT{
-    background-color: #a8e46b;
+.review{
+    background-color: #e4be6b;
 }
