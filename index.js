@@ -33,9 +33,9 @@ var db = mongoose.connect('mongodb+srv://db_user:Secretpassw0rd@cluster0.63jsz.m
 });
 
 mongoose.Promise = global.Promise;
-app.use(express.static(path.join(__dirname, 'Frontend/dist/Frontend')));
+app.use(express.static(path.join(__dirname, 'Frontend/static')));
 app.get(['/login', '/admin', '/register', '/verified'], (req,res) => {
-     res.sendFile(path.join(__dirname,'/Frontend/dist/Frontend/index.html'));
+     res.sendFile(path.join(__dirname,'/Frontend/static/index.html'));
 });
 
 app.use(expressSanitizer());
